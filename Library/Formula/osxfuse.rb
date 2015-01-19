@@ -13,8 +13,13 @@ class Osxfuse < Formula
 
   depends_on :macos => :snow_leopard
   depends_on :xcode => :build
-  depends_on ConflictsWithBinaryOsxfuse
-  depends_on UnsignedKextRequirement
+
+  # A fairly heinous hack to workaround our dependency resolution getting upset
+  # See https://github.com/Homebrew/homebrew/issues/35073
+  depends_on ConflictsWithBinaryOsxfuse => :build
+  depends_on UnsignedKextRequirement => [ :cask => "osxfuse",
+      :download => "http://sourceforge.net/projects/osxfuse/files/" ]
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
