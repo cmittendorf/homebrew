@@ -4,15 +4,15 @@ require "formula"
 # many releases for us to update to every single one:
 # https://pypi.python.org/pypi/youtube_dl
 class YoutubeDl < Formula
-  homepage "http://rg3.github.io/youtube-dl/"
-  url "https://yt-dl.org/downloads/2015.01.16/youtube-dl-2015.01.16.tar.gz"
-  sha256 "194eeeea3357b95eb447d8cfdc3227802849e2be697e2bad925cfad01e3a673e"
+  homepage "https://rg3.github.io/youtube-dl/"
+  url "https://yt-dl.org/downloads/2015.05.15/youtube-dl-2015.05.15.tar.gz"
+  sha256 "e64bdefd46f5c0172c4d43efebb6675796933362abf9add00fb071eb1eb58e2c"
 
   bottle do
     cellar :any
-    sha1 "710022f2dcd6c3d0816e4d67c2ce6592bc17a50f" => :yosemite
-    sha1 "b74d0130ca502c1f6191b272adaa05411c8f38f7" => :mavericks
-    sha1 "97cb214cf850dde2c525e89eab90f37186bd3b83" => :mountain_lion
+    sha256 "170bf48a51df92c416ede438871ed31a0663f4ff8c2a8d85f3dff3d1fa291b1a" => :yosemite
+    sha256 "19130d59bb9db5eaac895299f65b9bc9fc24b66c5fa87a0d34c68e587c888585" => :mavericks
+    sha256 "d69876e41c92c997095da19e6badee8b0f1b761cc042c14eb046e53b6e44f41a" => :mountain_lion
   end
 
   head do
@@ -31,10 +31,10 @@ class YoutubeDl < Formula
   end
 
   def caveats
-    "To use post-processing options, `brew install ffmpeg`."
+    "To use post-processing options, `brew install ffmpeg` or `brew install libav`."
   end
 
   test do
-    system "#{bin}/youtube-dl", "--simulate", "http://www.youtube.com/watch?v=he2a4xK8ctk"
+    system "#{bin}/youtube-dl", "--simulate", "https://www.youtube.com/watch?v=he2a4xK8ctk"
   end
 end

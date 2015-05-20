@@ -1,12 +1,12 @@
 class Emscripten < Formula
   homepage "https://kripken.github.io/emscripten-site/"
-  url "https://github.com/kripken/emscripten/archive/1.28.2.tar.gz"
-  sha1 "39f25db710874d835ac1ffe1941ef854a0a8f23a"
+  url "https://github.com/kripken/emscripten/archive/1.32.4.tar.gz"
+  sha256 "ddb75dc20cc77d93ed83f2a2c5b7ed220b5bc8d02bdfcdbbbdd95c31cab48266"
 
   bottle do
-    sha1 "f73edf45833d349803c37f911eb3be78a8053a5c" => :yosemite
-    sha1 "d5c0dc65320975927bffe7bd38c59d6a07ae4f9b" => :mavericks
-    sha1 "50318165485dda92de1fea4ccbacc627a4762264" => :mountain_lion
+    sha256 "858d9cde97970986d0a42fe90de44d12fcc191ae7b0ccb457f1c952aea7dd36b" => :yosemite
+    sha256 "5792dece7a9adfdc33863e55c1446b1d2e34202f4c0e7c49ddf171c121204b60" => :mavericks
+    sha256 "0182516af4cb4190cf61bb69f5caab94a3b1fc951e9c58a88b3999eba99d054a" => :mountain_lion
   end
 
   head do
@@ -23,15 +23,17 @@ class Emscripten < Formula
 
   stable do
     resource "fastcomp" do
-      url "https://github.com/kripken/emscripten-fastcomp/archive/1.28.2.tar.gz"
-      sha1 "967aa51c32b806ad15af3d8d61d66a004ada453d"
+      url "https://github.com/kripken/emscripten-fastcomp/archive/1.32.4.tar.gz"
+      sha256 "5b29c3f6cb43563762d5b130c506bc5b77b1f57130ef5edbd6e7c48bf5b349fa"
     end
 
     resource "fastcomp-clang" do
-      url "https://github.com/kripken/emscripten-fastcomp-clang/archive/1.28.2.tar.gz"
-      sha1 "87cdf58e83ef6bf0af813b336515ada52b124588"
+      url "https://github.com/kripken/emscripten-fastcomp-clang/archive/1.32.4.tar.gz"
+      sha256 "98d10934d44c66ec610454cd6df0e03c83d975a52dfdb593da91da51073d541b"
     end
   end
+
+  needs :cxx11
 
   depends_on :python if MacOS.version <= :snow_leopard
   depends_on "node"
@@ -39,6 +41,7 @@ class Emscripten < Formula
   depends_on "yuicompressor"
 
   def install
+    ENV.cxx11
     # OSX doesn't provide a "python2" binary so use "python" instead.
     python2_shebangs = `grep --recursive --files-with-matches ^#!/usr/bin/.*python2$ #{buildpath}`
     python2_shebang_files = python2_shebangs.lines.sort.uniq
