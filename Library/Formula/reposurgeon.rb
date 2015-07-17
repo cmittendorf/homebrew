@@ -1,19 +1,29 @@
 class Reposurgeon < Formula
+  desc "Edit version-control repository history"
   homepage "http://www.catb.org/esr/reposurgeon/"
-  url "http://www.catb.org/~esr/reposurgeon/reposurgeon-3.21.tar.gz"
-  sha256 "637f1450b235f0a08d6f850e565a60b357607ce3a95dcbaea15425947fd002b9"
+  url "http://www.catb.org/~esr/reposurgeon/reposurgeon-3.27.tar.gz"
+  sha256 "e2c0563384fa29917bb5014214280e586dbe389edd0c7006a3cdecb63c7b2e85"
+  revision 1
 
-  head "git://thyrsus.com/repositories/reposurgeon.git"
+  head "https://gitlab.com/esr/reposurgeon.git"
 
   bottle do
     cellar :any
-    sha256 "918d50c5d83de06cf5a88f6e0e0f5de47afe2109aae53e0f4bb2f6ee041a3d92" => :yosemite
-    sha256 "99d6ea1e89a911274bdae59c11b174924856edd9f2e8ee45b42c869cc6e41402" => :mavericks
-    sha256 "6c0b2aa9fc9bf407d83a1f91eecef45cfe6d169f3e4ea91e99ff014b47d2874f" => :mountain_lion
+    sha256 "863b3841ed6015be8d5c7fe8888cf63b08746c9134efd8ca220162b45eb16540" => :yosemite
+    sha256 "8b4c2487585b98d638a7361fa4243f1c8b400703dafeb73c5bdb6907668f6da7" => :mavericks
+    sha256 "47da8b218eda27df5a1ec36774475060d41708eb4e9ecd3071458e89ea445fba" => :mountain_lion
   end
 
+  option "without-cython", "Don't build a significantly faster tool using cython"
+
+  depends_on :python if MacOS.version <= :snow_leopard
   depends_on "asciidoc" => :build
   depends_on "xmlto" => :build
+
+  resource "cython" do
+    url "http://cython.org/release/Cython-0.22.1.tar.gz"
+    sha256 "7fff120e65e7b66edb4a42823f5642bad3bc1e5601bf882d66aee50248cf0682"
+  end
 
   def install
     # OSX doesn't provide 'python2', but on some Linux distributions
@@ -26,6 +36,17 @@ class Reposurgeon < Formula
     ENV["XML_CATALOG_FILES"] = "#{etc}/xml/catalog"
     system "make", "install", "prefix=#{prefix}"
     (share/"emacs/site-lisp").install "reposurgeon-mode.el"
+
+    if build.with? "cython"
+      resource("cython").stage do
+        system "python", *Language::Python.setup_install_args(buildpath/"vendor")
+      end
+      ENV.prepend_path "PYTHONPATH", buildpath/"vendor/lib/python2.7/site-packages"
+      system "make", "install-cyreposurgeon", "prefix=#{prefix}",
+             "CYTHON=#{buildpath}/vendor/bin/cython",
+             "pyinclude=" + `python-config --cflags`.chomp,
+             "pylib=" + `python-config --ldflags`.chomp
+    end
   end
 
   def caveats; <<-EOS.undent
@@ -45,6 +66,10 @@ class Reposurgeon < Formula
     system "git", "add", "homebrew"
     system "git", "commit", "--message", "brewing"
 
-    assert_match "brewing", shell_output("script -q /dev/null #{bin}/reposurgeon read list")
+    assertion = lambda do |prog|
+      assert_match "brewing", shell_output("script -q /dev/null #{bin}/#{prog} read list")
+    end
+    assertion["reposurgeon"]
+    assertion["cyreposurgeon"] if build.with? "cython"
   end
 end

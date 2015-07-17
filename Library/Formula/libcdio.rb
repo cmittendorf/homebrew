@@ -1,7 +1,8 @@
 require "formula"
 
 class Libcdio < Formula
-  homepage "http://www.gnu.org/software/libcdio/"
+  desc "Compact Disc Input and Control Library"
+  homepage "https://www.gnu.org/software/libcdio/"
   url "http://ftpmirror.gnu.org/libcdio/libcdio-0.93.tar.gz"
   mirror "http://ftp.gnu.org/gnu/libcdio/libcdio-0.93.tar.gz"
   sha1 "bc3f599b0b77d8d186c0afc66495f721747c5293"

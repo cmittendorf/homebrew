@@ -1,15 +1,16 @@
 require "language/go"
 
 class Gauge < Formula
-homepage "http://getgauge.io"
-  url "https://github.com/getgauge/gauge/archive/v0.1.3.tar.gz"
-  sha1 "e57e7e41006cc56999757c9b7e4f41770b912d96"
+  desc "Test automation tool that supports executable documentation"
+  homepage "http://getgauge.io"
+  url "https://github.com/getgauge/gauge/archive/v0.1.6.tar.gz"
+  sha256 "5b8ff4aee34a40ab61f5838b63f31ac665aaf6728a747f60c0132a371257d419"
 
   bottle do
     cellar :any
-    sha256 "26944fa402a063917c7278d28752512b8735eab62678933b44fbe290426bca47" => :yosemite
-    sha256 "e23a370369f7a647d84c2ad0889180a051d3757924c74f4a834e4b07ca71dff4" => :mavericks
-    sha256 "624cd5274c709149fa26d5bdd6224836e229c2d0b900ee49687b5ae5e6a492cd" => :mountain_lion
+    sha256 "6a9fbe6c914ebd448df2d7ff7afdafb95003aafd96596f65a978f556a3dabba7" => :yosemite
+    sha256 "6f7f2dacc8abc498a166e1cfee73a27d784484e484b326bada9f4c7a3934b0cc" => :mavericks
+    sha256 "dd6322d3d8f77cc9762d63859846f68a1d97aeacd318b5911b670c4bf8c6ca59" => :mountain_lion
   end
 
   depends_on "go" => :build
@@ -21,7 +22,7 @@ homepage "http://getgauge.io"
 
   go_resource "github.com/getgauge/common" do
     url "https://github.com/getgauge/common.git",
-        :revision => "f81990f732c85813af305a8f0c862e3c21138f37"
+        :revision => "16d1f84d7248590955440a4027cb062c4289a565"
   end
 
   go_resource "github.com/getgauge/mflag" do

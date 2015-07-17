@@ -1,7 +1,8 @@
 require 'formula'
 
 class Gsasl < Formula
-  homepage 'http://www.gnu.org/software/gsasl/'
+  desc "SASL library command-line interface"
+  homepage 'https://www.gnu.org/software/gsasl/'
   url 'http://ftpmirror.gnu.org/gsasl/gsasl-1.8.0.tar.gz'
   bottle do
     cellar :any

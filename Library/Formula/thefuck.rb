@@ -1,13 +1,16 @@
 class Thefuck < Formula
+  desc "Programatically correct mistyped console commands"
   homepage "https://github.com/nvbn/thefuck"
-  url "https://pypi.python.org/packages/source/t/thefuck/thefuck-1.42.tar.gz"
-  sha256 "049f52a44d82ed1e79abb3c32eb96459e3b848fbc097af826dda218a5910f011"
+  url "https://pypi.python.org/packages/source/t/thefuck/thefuck-1.48.tar.gz"
+  sha256 "cc64016e6740a16221e2ec8dd752849b1876f69dc23b094bf5ea9d03e536ec59"
+
+  head "https://github.com/nvbn/thefuck.git"
 
   bottle do
     cellar :any
-    sha256 "8cb7b9d983aa110e303cb5b10219c3daace5e88c4ce38cf7ff49049c12467636" => :yosemite
-    sha256 "d4078976c01946fb393552edee5af45abbb330e6ede9d9f7a8181077e22a4892" => :mavericks
-    sha256 "a15e4cf605c155dc4e8648622ac241808ffea28836a080ae6946a8b1b2f287d1" => :mountain_lion
+    sha256 "9db866018e5970da5d491b5c1749878f458857252a6f4871b3815ce8e1e7a4fb" => :yosemite
+    sha256 "aa922aeb46c01fe64d24bff40fd5a8aad247e5ffcbee60a63b643b048fa01f1e" => :mavericks
+    sha256 "54a4501488d834d893006a5dd85a33e3cad590244f93483ff99c6778d7496d2c" => :mountain_lion
   end
 
   depends_on :python if MacOS.version <= :snow_leopard
@@ -36,20 +39,13 @@ class Thefuck < Formula
     ENV["PYTHONPATH"] = libexec/"vendor/lib/python2.7/site-packages"
     ENV.prepend_create_path "PYTHONPATH", libexec/"lib/python2.7/site-packages"
 
-    %w[psutil pathlib colorama six].each do |r|
-      resource(r).stage do
-        system "python", *Language::Python.setup_install_args(libexec/"vendor")
-      end
+    resources.each do |r|
+      r.stage { system "python", *Language::Python.setup_install_args(libexec/"vendor") }
     end
     system "python", *Language::Python.setup_install_args(libexec)
 
     bin.install Dir["#{libexec}/bin/*"]
     bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"])
-  end
-
-  test do
-    output = shell_output(bin/"thefuck echho")
-    assert output.include? "echo"
   end
 
   def caveats; <<-EOS.undent
@@ -59,5 +55,10 @@ class Thefuck < Formula
 
       Other shells: https://github.com/nvbn/thefuck/wiki/Shell-aliases
     EOS
+  end
+
+  test do
+    output = shell_output(bin/"thefuck echho")
+    assert output.include? "echo"
   end
 end
