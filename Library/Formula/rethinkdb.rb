@@ -1,20 +1,20 @@
 class Rethinkdb < Formula
   desc "The open-source database for the realtime web"
-  homepage "http://www.rethinkdb.com/"
-  url "http://download.rethinkdb.com/dist/rethinkdb-2.0.4.tgz"
-  sha1 "3d01321fa74e77178fcf56007d1a2e9e8c639812"
+  homepage "https://www.rethinkdb.com/"
+  url "https://download.rethinkdb.com/dist/rethinkdb-2.2.1.tgz"
+  sha256 "6611b4e62020a68c23e0a1f0a517b97677e0358c261a3e188d14b02b014a2c9e"
 
   bottle do
     cellar :any
-    sha256 "642588597a0aae028c67c3037073c2573ad8a634dc9d22710c4bcfc5c9bf31ba" => :yosemite
-    sha256 "ce8dee78d046056905196253583730dcfb5abd7b23dc87000f0de6bac6637a8d" => :mavericks
-    sha256 "13c65c607f4d919076bad2f74c4d8b5c9929dbd784bee6ab5160e5e94bae48cd" => :mountain_lion
+    revision 1
+    sha256 "952e669603cf7c4a91dc0af3c1ae0b6b7489d3573da2c88d7074f4558867c7bc" => :el_capitan
+    sha256 "843c3ccbcf004becaaaaa582a1bbcd29b2671143a7fe0323ff14f6df0b5155c5" => :yosemite
+    sha256 "2ead827b843c81e0d3b48c469c665f81a92dbe48dfc530d06060d06e36c49381" => :mavericks
   end
 
   depends_on :macos => :lion
   depends_on "boost" => :build
   depends_on "openssl"
-  depends_on "icu4c"
 
   fails_with :gcc do
     build 5666 # GCC 4.2.1
@@ -32,7 +32,11 @@ class Rethinkdb < Formula
     system "make"
     system "make", "install-osx"
 
-    mkdir_p "#{var}/log/rethinkdb"
+    (var/"log/rethinkdb").mkpath
+
+    inreplace "packaging/assets/config/default.conf.sample",
+              /^# directory=.*/, "directory=#{var}/rethinkdb"
+    etc.install "packaging/assets/config/default.conf.sample" => "rethinkdb.conf"
   end
 
   def plist; <<-EOS.undent
@@ -45,8 +49,8 @@ class Rethinkdb < Formula
       <key>ProgramArguments</key>
       <array>
           <string>#{opt_bin}/rethinkdb</string>
-          <string>-d</string>
-          <string>#{var}/rethinkdb</string>
+          <string>--config-file</string>
+          <string>#{etc}/rethinkdb.conf</string>
       </array>
       <key>WorkingDirectory</key>
       <string>#{HOMEBREW_PREFIX}</string>

@@ -1,19 +1,18 @@
 class Ghc < Formula
   desc "Glorious Glasgow Haskell Compilation System"
   homepage "https://haskell.org/ghc/"
-  url "https://downloads.haskell.org/~ghc/7.10.1/ghc-7.10.1-src.tar.xz"
-  sha256 "92f3e3d67a637c587c49b61c704a670953509eb4b17a93c0c2ac153da4cd3aa0"
-
-  revision 1
+  url "https://downloads.haskell.org/~ghc/7.10.3/ghc-7.10.3a-src.tar.bz2"
+  sha256 "877899988b64d13a86148f4db29b26d5adddef9207f718b726dc5c202d8efd8e"
 
   bottle do
-    sha256 "969cc9bfd6574070982d1bd6678f1eeee430940d00d10b70204528cc9ce84c07" => :yosemite
-    sha256 "bb82b24644330273d5e8b02b5c3ced76cbde1b388a45047327db3cfd5f07fe1f" => :mavericks
-    sha256 "8b7900d0f6a72312969494b70ace58ed03ef8624b52d5db63ecccc00cf056e98" => :mountain_lion
+    sha256 "a6999a2e17980f7837f73206648939d09042715020ef2b32be47546a74ce5178" => :el_capitan
+    sha256 "866d8163ef9fed8ccc99164a6025d6a63e836e8c9ac9d8c2eeca7d96ecb9d135" => :yosemite
+    sha256 "44e78381ae36594fdc6d59f03ccce4414db60372a5830403d2b8b5795924f25a" => :mavericks
   end
 
-  option "with-tests", "Verify the build using the testsuite."
-  deprecated_option "tests" => "with-tests"
+  option "with-test", "Verify the build using the testsuite"
+  deprecated_option "tests" => "with-test"
+  deprecated_option "with-tests" => "with-test"
 
   resource "gmp" do
     url "http://ftpmirror.gnu.org/gmp/gmp-6.0.0a.tar.bz2"
@@ -38,14 +37,14 @@ class Ghc < Formula
       url "https://downloads.haskell.org/~ghc/7.6.3/ghc-7.6.3-x86_64-apple-darwin.tar.bz2"
       sha256 "f7a35bea69b6cae798c5f603471a53b43c4cc5feeeeb71733815db6e0a280945"
     else
-      url "https://downloads.haskell.org/~ghc/7.10.1/ghc-7.10.1-x86_64-apple-darwin.tar.xz"
-      sha256 "bc45de19efc831f7d5a3fe608ba4ebcd24cc0f414cac4bc40ef88a04640583f6"
+      url "https://downloads.haskell.org/~ghc/7.10.3/ghc-7.10.3-x86_64-apple-darwin.tar.xz"
+      sha256 "852781d43d41cd55d02f818fe798bb4d1f7e52f488408167f413f7948cf1e7df"
     end
   end
 
   resource "testsuite" do
-    url "https://downloads.haskell.org/~ghc/7.10.1/ghc-7.10.1-testsuite.tar.xz"
-    sha256 "33bbdfcfa50363526ea9671c8c1f01b7c5dec01372604d45cbb53bb2515298cb"
+    url "https://downloads.haskell.org/~ghc/7.10.3/ghc-7.10.3-testsuite.tar.xz"
+    sha256 "50c151695c8099901334a8478713ee3bb895a90132e2b75d1493961eb8ec643a"
   end
 
   def install
@@ -68,8 +67,6 @@ class Ghc < Formula
     args = ["--with-gmp-includes=#{gmp}/include",
             "--with-gmp-libraries=#{gmp}/lib",
             "--with-ld=ld", # Avoid hardcoding superenv's ld.
-            # The offending -Wno-[unicode] flags get appended here, so set:
-            "--with-hs-cpp-flags=-E -undef -traditional",
             "--with-gcc=#{ENV.cc}"] # Always.
 
     if ENV.compiler == :clang
@@ -90,7 +87,7 @@ class Ghc < Formula
     system "./configure", "--prefix=#{prefix}", *args
     system "make"
 
-    if build.with? "tests"
+    if build.with? "test"
       resource("testsuite").stage { buildpath.install Dir["*"] }
       cd "testsuite" do
         system "make", "clean"
@@ -103,6 +100,6 @@ class Ghc < Formula
 
   test do
     (testpath/"hello.hs").write('main = putStrLn "Hello Homebrew"')
-    system "runghc", testpath/"hello.hs"
+    system "#{bin}/runghc", testpath/"hello.hs"
   end
 end
